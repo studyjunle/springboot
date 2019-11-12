@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jq.js"></script>
+</head>
+<body>
+<input type="button" onclick="send1()" value="发送json数据1"/><br><hr>
+<input type="button" onclick="send2()" value="发送json数据2"/>
+<script type="text/javascript">
+    // 企业微信应用的ID	必须有数据否则无法推送报表到企业微信中
+    var agentid = ["1000003", "1000004"];
+    // 要推送的报表ID		必须有数据否则无法推送报表到企业微信中
+    var resid = "I8a8ae5da016c8d928d921ac5016c8e1762920b22";
+    // 要推送的用户列表	如果没有推送的用户列表就让它等于一个空数组即 var userArray = []	如果有推送的用户	var userArray = ["Zhangsan", "Lisi"]等等
+    var userArray = ["zhang"];
+    // 要推送的部门列表	如果没有推送的部门列表就让它等于一个空数组即 var partyArray = []	如果有推送的部门	var partyArray = ["1", "2", "3", "6"]等等
+    var partyArray = [];
+    // 要推送报表的参数	如果该报表没有参数或者不想传递参数就让它等于一个空数组即 var paramsInfo = [] 	如果有参数就 var paramsInfo = [{"name" : "参数名称", "value" : "真实值", "display" : "显示值"}]
+    // 下面的paramsInfo是演示报表有两个参数的传递，如果传递的值错误，就无法正常显示，所以请确保传递的参数是否正确
+    var paramsInfo = [{
+        "name": "ShipRegion",
+        "value": "华东",
+        "displayValue": "华东"
+    }, {
+        "name": "CategoryName",
+        "value": "饮料",
+        "displayValue": "饮料"
+    }];
+    // 构造报表数据
+    var reportData = {
+        "agentid": agentid,
+        "userArray": userArray,
+        "partyArray": partyArray,
+        "resid": resid,
+        "paramsInfo": paramsInfo
+    }
+
+    // 发送json1数据    contentType: application/json 以json的形式  推荐使用
+    // dataType 代表 返回的一个json对象
+    function send1() {
+        $.ajax({
+            url: "/smartbi/vision/TestServlet",
+            type: "post",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(reportData),
+            dataType: 'json',
+            success: function (data) {
+                alert(data);
+                // alert(data.resid);
+            }
+        });
+    }
+    // 发送json2数据    contentType: 默认以表单的形式
+    function send2() {
+        $.ajax({
+            url: '/smartbi/vision/TestServlet',
+            type: 'POST',
+            dataType: "json",
+            data: {"reportInfo": JSON.stringify(reportData)},
+            success: function (data) {
+                alert(data);
+                // alert(data.resid);
+            }
+        });
+    }
+</script>
+</body>
+</html>
